@@ -18,8 +18,10 @@ class SqliteAdapter extends Connection
 
 	protected function __construct($info)
 	{
-		if (!file_exists($info->host))
-			throw new DatabaseException("Could not find sqlite db: $info->host");
+        if ($info->host != 'memory' && !file_exists($info->host))
+            throw new DatabaseException("Could not find sqlite db: $info->host");
+        if ($info->host == 'memory')
+            $info->host = sprintf(":%s:", $info->host);
 
 		$this->connection = new PDO("sqlite:$info->host",null,null,static::$PDO_OPTIONS);
 	}
